@@ -8,6 +8,17 @@ class MinimalSource(BaseModel):
     first_character_index: int
     last_character_index: int
 
+class Chunk(MinimalSource):
+
+    text: str
+    @model_validator(mode='after')
+    def validator_index(self):
+        if self.first_character_index < 0 or self.last_character_index < 0:
+            raise ValueError("Character indices cannot be negative")
+        if self.last_character_index < self.first_character_index:
+            raise ValueError("Last character index cannot be before first character index")
+
+        return self
 
 class UnansweredQuestion(BaseModel):
     question_id: str = Field(default_factory=lambda:
@@ -24,19 +35,6 @@ class MinimalSearchResults(BaseModel):
     question_id: str
     question: str
     retrieved_sources: List[MinimalSource]
-
-class Chunk(MinimalSource):
-    text: str
-
-    @model_validator(mode="after")
-    def validate_indices(self):
-        if self.first_character_index < 0 or self.last_character_index < 0:
-            raise ValueError("Character indices cannot be negative")
-
-        if self.last_character_index < self.first_character_index:
-            raise ValueError("Last character index cannot be before first character index")
-
-        return self
 
 class MinimalAnswer(MinimalSearchResults):
     answer: str
