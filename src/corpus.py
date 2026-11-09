@@ -3,6 +3,10 @@ import typing
 from pydantic import BaseModel
 
 
+def read_file(path: str | Path) -> str:
+    return Path(path).read_text(encoding="utf-8")
+
+
 def find_files(paths: str, extension: list[str]) -> list[Path]:
     path = Path(paths)
 
