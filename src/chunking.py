@@ -66,8 +66,9 @@ class FixedSizeChunker:
             Chunk(
                 file_path=file_path,
                 first_character_index=start,
-                last_character_index=min(start + self.max_chunk_size, len(text)) - 1,
-                text=text[start : start + self.max_chunk_size],
+                last_character_index=min(start + self.max_chunk_size,
+                                         len(text)) - 1,
+                text=text[start: start + self.max_chunk_size],
             )
             for start in range(0, len(text), self.max_chunk_size)
         ]
