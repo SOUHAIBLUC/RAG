@@ -1,13 +1,19 @@
 import ast
 import re
+import sys
 from bisect import bisect_right
 from pathlib import Path
 
 from .models import Chunk
 
 
-def read_file(path: str | Path) -> str:
-    return Path(path).read_text(encoding="utf-8")
+def read_files(path: str | Path) -> str | None:
+    try:
+        with open(path, encoding="utf-8", newline="") as file:
+            return file.read()
+    except (UnicodeDecodeError, OSError) as e:
+        print(f"Warning: Could not read file {path}: {e}", file=sys.stderr)
+        return None
 
 
 def _validate_max_chunk_size(max_chunk_size: int) -> None:
@@ -28,7 +34,9 @@ def _chunk_at_boundaries(
     while start < len(text):
         limit = min(start + max_chunk_size, len(text))
         boundary_index = bisect_right(boundaries, limit) - 1
-        if boundary_index >= 0 and boundaries[boundary_index] > start:
+        if len(text) - start <= max_chunk_size:
+            end = len(text)
+        elif boundary_index >= 0 and boundaries[boundary_index] > start:
             end = boundaries[boundary_index]
         else:
             newline = text.rfind("\n", start + 1, limit)

@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from .chunking import read_file as read_file
-
 
 def find_files(paths: str, extension: list[str]) -> list[Path]:
     path = Path(paths)
