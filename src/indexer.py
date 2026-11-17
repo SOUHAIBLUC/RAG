@@ -1,9 +1,7 @@
 import json
 import time
 from pathlib import Path
-
 from tqdm import tqdm
-
 from src.models import Chunk
 from src.chunking import PythonChunker, MarkdownChunker, read_files
 from src.corpus import find_files
