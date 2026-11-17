@@ -1,6 +1,7 @@
 
 from src.corpus import find_files
 from src.models import Chunk
+from src.indexer import Indexer, load_chunks, save_chunks
 from src.chunking import read_files, PythonChunker, MarkdownChunker
 from tqdm import tqdm
 
@@ -85,6 +86,20 @@ def main() -> None:
 
         for problem in problems:
             all_problems.append(f"{path}: {problem}")
+    indexer = Indexer("data/raw/vllm-0.10.1", 2000)
+
+    chunks = indexer.build()
+
+    save_chunks(chunks)
+
+    loaded_chunks = load_chunks()
+
+    assert len(chunks) == len(loaded_chunks)
+
+    if chunks:
+        assert chunks[0] == loaded_chunks[0]
+
+    print("Save/load round trip successful!")
 
     print(f"Files read: {files_read}")
     print(f"Files skipped: {skipped_count}")
